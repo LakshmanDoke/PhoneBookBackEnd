@@ -35,8 +35,19 @@ public class PhoneBookController {
             phoneNoEntities.forEach(x -> phoneBookRepo.delete(x));
             return true;
         } catch (Exception ignored) {
-
         }
         return false;
+    }
+
+    @PutMapping("/update")
+    public PhoneNoEntity updatePhoneNumber(@RequestBody PhoneNo phoneNo) {
+        PhoneNoEntity noEntity = new PhoneNoEntity();
+        BeanUtils.copyProperties(phoneNo, noEntity);
+        List<PhoneNoEntity> phoneNoEntities = phoneBookRepo.findByPhoneNumber(phoneNo.getPhoneNumber());
+        if (phoneNoEntities != null && !phoneNoEntities.isEmpty()) {
+            noEntity.setId(phoneNoEntities.get(0).getId());
+            return phoneBookRepo.save(noEntity);
+        }
+        return null;
     }
 }
